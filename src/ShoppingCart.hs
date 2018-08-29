@@ -4,7 +4,7 @@ module ShoppingCart (
   taxPrice,
   findProductQuantity,
   Product(CartProduct),
-  Cart(MyCart)
+  Cart
 ) where
 
 data Product = CartProduct{
@@ -12,27 +12,21 @@ data Product = CartProduct{
   price :: Double
 } deriving (Show, Eq)
 
-data Cart = MyCart {
-  products :: [Product],
-  taxRate :: Double
-} deriving (Show, Eq)
-
-type AggregatedCost = Cart -> Double
+type Cart = [Product]
 
 addProductsToCart :: Cart -> Product -> Cart
-addProductsToCart c p = MyCart  ((products c) ++ [p]) $ taxRate c
+addProductsToCart c p =  c ++ [p]
 
-totalPrice :: AggregatedCost
-totalPrice cart = total + (total * (taxRate cart)) where
+totalPrice :: Cart -> Double -> Double
+totalPrice cart taxRate = total + (total * taxRate) where
     total = cartSum cart
 
-cartSum :: AggregatedCost
-cartSum cart = foldl computePrice 0.0 $ products cart
+cartSum :: Cart -> Double
+cartSum cart = foldl computePrice 0.0 $ cart
    where computePrice acc product = acc + (price product)
 
-taxPrice :: AggregatedCost
-taxPrice cart = (cartSum cart) * (taxRate cart)
-
+taxPrice :: Cart -> Double -> Double
+taxPrice cart taxRate = (cartSum cart) * (taxRate)
 
 findProductQuantity :: Cart -> Product -> Int
-findProductQuantity cart product = length (filter (\p -> (name p) == (name product)) (products cart))
+findProductQuantity cart product = length (filter (\p -> (name p) == (name product)) (cart))
