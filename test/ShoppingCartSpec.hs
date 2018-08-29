@@ -2,6 +2,8 @@ module ShoppingCartSpec (main, spec) where
 
 import Test.Hspec
 import Test.QuickCheck
+import Data.Map (Map, (!), fromList)
+import qualified Data.Map as Map
 import ShoppingCart
 
 main :: IO ()
@@ -20,6 +22,8 @@ cartWith6DoveSoaps = addProductsToCart cartWith5DoveSoaps doveSoap
 cartWith2DoveSoapsWithTax = (replicate 2 doveSoap)
 cartWith2DoveSoapsAnd2Axe = addProductsToCart (addProductsToCart cartWith2DoveSoapsWithTax axeDeo) axeDeo
 cartWith3DoveSoaps = (replicate 3 doveSoap)
+
+doveSoapWithOffer = fromList[(doveSoap, buy2Get1FreeOffer)]
 
 spec :: Spec
 spec = do
@@ -40,3 +44,8 @@ spec = do
   describe "tax price" $ do
     it "should give 35.00 as tax" $ do
         taxPrice cartWith2DoveSoapsAnd2Axe twelvePointFiveTax `shouldBe` 34.995
+
+  describe "offer price" $ do
+    it "should give 1 dove soap free if it qualifies for buy 1 get 1 free with NO tax" $ do
+        discountPrice cartWith3DoveSoaps doveSoapWithOffer `shouldBe` 39.99
+
