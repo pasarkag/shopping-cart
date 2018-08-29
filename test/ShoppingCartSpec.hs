@@ -23,6 +23,7 @@ cartWith2DoveSoapsWithTax = (replicate 2 doveSoap)
 cartWith2DoveSoapsAnd2Axe = addProductsToCart (addProductsToCart cartWith2DoveSoapsWithTax axeDeo) axeDeo
 cartWith3DoveSoaps = (replicate 3 doveSoap)
 
+emptyOffers = Map.empty
 doveSoapWithOffer = fromList[(doveSoap, buy2Get1FreeOffer)]
 
 spec :: Spec
@@ -37,15 +38,17 @@ spec = do
 
   describe "total price" $ do
     it "should give 0.0 for an empty shopping cart" $ do
-        totalPrice emptyCart defaultTax `shouldBe` 0.0
+        totalPrice emptyCart emptyOffers defaultTax `shouldBe` 0.0
     it "should give 139.98 for a dove and axe" $ do
-        totalPrice cartWithDoveAndAxe defaultTax `shouldBe` 139.98
+        totalPrice cartWithDoveAndAxe emptyOffers defaultTax `shouldBe` 139.98
 
   describe "tax price" $ do
     it "should give 35.00 as tax" $ do
-        taxPrice cartWith2DoveSoapsAnd2Axe twelvePointFiveTax `shouldBe` 34.995
+        taxPrice cartWith2DoveSoapsAnd2Axe emptyOffers twelvePointFiveTax `shouldBe` 34.995
 
   describe "offer price" $ do
-    it "should give 1 dove soap free if it qualifies for buy 1 get 1 free with NO tax" $ do
+    it "should give 1 dove soap free if it qualifies for buy 2 get 1 free" $ do
         discountPrice cartWith3DoveSoaps doveSoapWithOffer `shouldBe` 39.99
+        totalPrice cartWith3DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 89.97749999999999
+        taxPrice cartWith3DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 9.997499999999999
 

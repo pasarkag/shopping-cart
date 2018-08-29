@@ -21,21 +21,23 @@ type Cart = [Product]
 
 type Offer = Int -> Int
 
+type OfferAssociation = Map Product Offer
+
 addProductsToCart :: Cart -> Product -> Cart
 addProductsToCart c p =  c ++ [p]
 
-totalPrice :: Cart -> Double -> Double
-totalPrice cart taxRate = total + (total * taxRate) where
-    total = cartSum cart
+totalPrice :: Cart -> OfferAssociation -> Double -> Double
+totalPrice cart offers taxRate = total + (total * taxRate) where
+    total = (cartSum cart) - (discountPrice cart offers)
 
 cartSum :: Cart -> Double
 cartSum cart = foldl computePrice 0.0 cart
    where computePrice acc product = acc + (price product)
 
-taxPrice :: Cart -> Double -> Double
-taxPrice cart taxRate = (cartSum cart) * (taxRate)
+taxPrice :: Cart -> OfferAssociation -> Double -> Double
+taxPrice cart offers taxRate = ((cartSum cart) - (discountPrice cart offers)) * (taxRate)
 
-discountPrice :: Cart -> (Map Product Offer) -> Double
+discountPrice :: Cart -> OfferAssociation -> Double
 discountPrice cart offers = foldrWithKey computeDiscount 0.0 offers
   where computeDiscount product offer acc = acc + ((price product) * fromIntegral (offer (findProductQuantity cart product)))
 
