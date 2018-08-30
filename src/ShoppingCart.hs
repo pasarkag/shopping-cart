@@ -13,13 +13,14 @@ module ShoppingCart (
 
 import Data.Map (Map, (!), foldrWithKey, insertWith, insert)
 import qualified Data.Map as Map
+import Data.Decimal (Decimal, roundTo)
 
 data Product = CartProduct{
   name :: String,
-  price :: Double
+  price :: Price
 } deriving (Show, Eq, Ord)
 
-type Price = Double
+type Price = Decimal
 
 type ProductCount = Int
 
@@ -36,19 +37,21 @@ associateOffer :: OfferAssociation -> Product -> Offer -> OfferAssociation
 associateOffer offers product offer = insert product offer offers
 
 totalPrice :: Cart -> OfferAssociation -> Price -> Price
-totalPrice cart offers taxRate = total + (total * taxRate) where
-    total = discountedCartSum cart offers
+totalPrice cart offers taxRate = roundToTwoDecimals $ total + (total * taxRate)
+  where total = discountedCartSum cart offers
 
 discountedCartSum :: Cart -> OfferAssociation -> Price
-discountedCartSum cart offers = foldrWithKey computePrice 0.0 cart - (discountPrice cart offers)
+discountedCartSum cart offers = roundToTwoDecimals $ foldrWithKey computePrice 0.0 cart - (discountPrice cart offers)
   where computePrice product count acc = acc + ((price product) * fromIntegral count)
 
 taxPrice :: Cart -> OfferAssociation -> Price -> Price
-taxPrice cart offers taxRate = (discountedCartSum cart offers) * (taxRate)
+taxPrice cart offers taxRate = roundToTwoDecimals $ (discountedCartSum cart offers) * (taxRate)
 
 discountPrice :: Cart -> OfferAssociation -> Price
-discountPrice cart offers = foldrWithKey computeDiscount 0.0 offers
+discountPrice cart offers = roundToTwoDecimals $ foldrWithKey computeDiscount 0.0 offers
   where computeDiscount product offer acc = acc + offer cart product
+
+roundToTwoDecimals input = roundTo 2 input
 
 findProductQuantity :: Cart -> Product -> ProductCount
 findProductQuantity cart product = cart ! product
