@@ -50,12 +50,12 @@ spec = do
     it "should give 35.00 as tax" $ do
         taxPrice cartWith2DoveSoapsAnd2Axe emptyOffers twelvePointFiveTax `shouldBe` 34.995
 
-  describe "offer price" $ do
-    it "should give 1 dove soap free if it qualifies for buy 2 get 1 free" $ do
+  describe "offer price for buy 2 get 1 free" $ do
+    it "should give 1 dove soap free" $ do
         discountPrice cartWith3DoveSoaps doveSoapWithOffer `shouldBe` 39.99
         totalPrice cartWith3DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 89.97749999999999
         taxPrice cartWith3DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 9.997499999999999
-    it "should give 1 dove soap free when 5 dove soaps are added and dove qualifes for buy 2 get 1 free offer" $ do
+    it "should give 1 dove soap free when 5 dove soaps are added" $ do
         discountPrice cartWith5DoveSoaps doveSoapWithOffer `shouldBe` 39.99
         totalPrice cartWith5DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 179.955
         taxPrice cartWith5DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 19.995
