@@ -19,34 +19,38 @@ data Product = CartProduct{
   price :: Double
 } deriving (Show, Eq, Ord)
 
-type Cart = Map Product Int
+type Price = Double
 
-type Offer = Cart -> Product -> Double
+type ProductCount = Int
+
+type Cart = Map Product ProductCount
+
+type Offer = Cart -> Product -> Price
 
 type OfferAssociation = Map Product Offer
 
-addProductsToCart :: Cart -> Product -> Int -> Cart
+addProductsToCart :: Cart -> Product -> ProductCount -> Cart
 addProductsToCart cart product count =  insertWith (+) product count cart
 
 associateOffer :: OfferAssociation -> Product -> Offer -> OfferAssociation
 associateOffer offers product offer = insert product offer offers
 
-totalPrice :: Cart -> OfferAssociation -> Double -> Double
+totalPrice :: Cart -> OfferAssociation -> Price -> Price
 totalPrice cart offers taxRate = total + (total * taxRate) where
     total = (cartSum cart) - (discountPrice cart offers)
 
-cartSum :: Cart -> Double
+cartSum :: Cart -> Price
 cartSum cart = foldrWithKey computePrice 0.0 cart
    where computePrice product count acc = acc + ((price product) * fromIntegral count)
 
-taxPrice :: Cart -> OfferAssociation -> Double -> Double
+taxPrice :: Cart -> OfferAssociation -> Price -> Price
 taxPrice cart offers taxRate = ((cartSum cart) - (discountPrice cart offers)) * (taxRate)
 
-discountPrice :: Cart -> OfferAssociation -> Double
+discountPrice :: Cart -> OfferAssociation -> Price
 discountPrice cart offers = foldrWithKey computeDiscount 0.0 offers
   where computeDiscount product offer acc = acc + offer cart product
 
-findProductQuantity :: Cart -> Product -> Int
+findProductQuantity :: Cart -> Product -> ProductCount
 findProductQuantity cart product = cart ! product
 
 buy2Get1FreeOffer :: Offer
