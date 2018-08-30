@@ -22,11 +22,13 @@ cartWith6DoveSoaps = fromList[(doveSoap, 6)]
 cartWith2DoveSoapsWithTax = fromList[(doveSoap, 2)]
 cartWith2DoveSoapsAnd2Axe = fromList[(doveSoap, 2), (axeDeo, 2)]
 cartWith3DoveSoaps = fromList[(doveSoap, 3)]
+cartWith2DoveSoaps = fromList[(doveSoap, 2)]
 
 cartWith3DoveSoapsAnd2AxeDeo = fromList[(doveSoap, 3), (axeDeo, 2)]
 
 emptyOffers = Map.empty
-doveSoapWithOffer = associateOffer emptyOffers doveSoap buy2Get1FreeOffer
+doveSoapWithBuy2Get1Offer = associateOffer emptyOffers doveSoap buy2Get1FreeOffer
+doveSoapWithBuy1Get50PercentOffer = associateOffer emptyOffers doveSoap buy1Get50PercentOnNext
 
 spec :: Spec
 spec = do
@@ -52,14 +54,20 @@ spec = do
 
   describe "offer price for buy 2 get 1 free" $ do
     it "should give 1 dove soap free" $ do
-        discountPrice cartWith3DoveSoaps doveSoapWithOffer `shouldBe` 39.99
-        totalPrice cartWith3DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 89.97749999999999
-        taxPrice cartWith3DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 9.997499999999999
+        discountPrice cartWith3DoveSoaps doveSoapWithBuy2Get1Offer `shouldBe` 39.99
+        totalPrice cartWith3DoveSoaps doveSoapWithBuy2Get1Offer twelvePointFiveTax `shouldBe` 89.97749999999999
+        taxPrice cartWith3DoveSoaps doveSoapWithBuy2Get1Offer twelvePointFiveTax `shouldBe` 9.997499999999999
     it "should give 1 dove soap free when 5 dove soaps are added" $ do
-        discountPrice cartWith5DoveSoaps doveSoapWithOffer `shouldBe` 39.99
-        totalPrice cartWith5DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 179.955
-        taxPrice cartWith5DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 19.995
+        discountPrice cartWith5DoveSoaps doveSoapWithBuy2Get1Offer `shouldBe` 39.99
+        totalPrice cartWith5DoveSoaps doveSoapWithBuy2Get1Offer twelvePointFiveTax `shouldBe` 179.955
+        taxPrice cartWith5DoveSoaps doveSoapWithBuy2Get1Offer twelvePointFiveTax `shouldBe` 19.995
     it "should not give any discount to axe deo as it does not have any offer" $ do
-        discountPrice cartWith3DoveSoapsAnd2AxeDeo doveSoapWithOffer `shouldBe` 39.99
-        totalPrice cartWith3DoveSoapsAnd2AxeDeo doveSoapWithOffer twelvePointFiveTax `shouldBe` 314.955
-        taxPrice cartWith3DoveSoapsAnd2AxeDeo doveSoapWithOffer twelvePointFiveTax `shouldBe` 34.995
+        discountPrice cartWith3DoveSoapsAnd2AxeDeo doveSoapWithBuy2Get1Offer `shouldBe` 39.99
+        totalPrice cartWith3DoveSoapsAnd2AxeDeo doveSoapWithBuy2Get1Offer twelvePointFiveTax `shouldBe` 314.955
+        taxPrice cartWith3DoveSoapsAnd2AxeDeo doveSoapWithBuy2Get1Offer twelvePointFiveTax `shouldBe` 34.995
+
+  describe "offer price for buy 1 get 50% on next" $ do
+    it "should give 50% discount on second dove soap when 2 are added" $ do
+        discountPrice cartWith2DoveSoaps doveSoapWithBuy1Get50PercentOffer `shouldBe` 19.995
+        totalPrice cartWith2DoveSoaps doveSoapWithBuy1Get50PercentOffer twelvePointFiveTax `shouldBe` 67.483125
+        taxPrice cartWith2DoveSoaps doveSoapWithBuy1Get50PercentOffer twelvePointFiveTax `shouldBe` 7.498125

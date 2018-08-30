@@ -6,6 +6,7 @@ module ShoppingCart (
   Product(CartProduct),
   Cart,
   buy2Get1FreeOffer,
+  buy1Get50PercentOnNext,
   discountPrice,
   associateOffer
 ) where
@@ -49,5 +50,10 @@ findProductQuantity :: Cart -> Product -> Int
 findProductQuantity cart product = cart ! product
 
 buy2Get1FreeOffer :: Offer
-buy2Get1FreeOffer cart product = ((price product) * fromIntegral (floor (fromIntegral (findProductQuantity cart product) / 3)))
+buy2Get1FreeOffer cart product = ((price product) * discountOn)
+  where discountOn = fromIntegral (floor (fromIntegral (findProductQuantity cart product) / 3))
+
+buy1Get50PercentOnNext :: Offer
+buy1Get50PercentOnNext cart product = discountOn * ((price product) / 2)
+  where discountOn = fromIntegral (floor (fromIntegral (findProductQuantity cart product) / 2))
 
