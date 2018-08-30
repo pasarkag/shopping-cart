@@ -19,7 +19,7 @@ data Product = CartProduct{
 
 type Cart = Map Product Int
 
-type Offer = Int -> Int
+type Offer = Cart -> Product -> Double
 
 type OfferAssociation = Map Product Offer
 
@@ -39,11 +39,11 @@ taxPrice cart offers taxRate = ((cartSum cart) - (discountPrice cart offers)) * 
 
 discountPrice :: Cart -> OfferAssociation -> Double
 discountPrice cart offers = foldrWithKey computeDiscount 0.0 offers
-  where computeDiscount product offer acc = acc + ((price product) * fromIntegral (offer (findProductQuantity cart product)))
+  where computeDiscount product offer acc = acc + offer cart product
 
 findProductQuantity :: Cart -> Product -> Int
 findProductQuantity cart product = cart ! product
 
 buy2Get1FreeOffer :: Offer
-buy2Get1FreeOffer countOfProducts = floor ((fromIntegral countOfProducts) / 3)
+buy2Get1FreeOffer cart product = ((price product) * fromIntegral (floor (fromIntegral (findProductQuantity cart product) / 3)))
 
