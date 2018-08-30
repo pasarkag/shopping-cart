@@ -26,7 +26,7 @@ cartWith3DoveSoaps = fromList[(doveSoap, 3)]
 cartWith3DoveSoapsAnd2AxeDeo = fromList[(doveSoap, 3), (axeDeo, 2)]
 
 emptyOffers = Map.empty
-doveSoapWithOffer = fromList[(doveSoap, buy2Get1FreeOffer)]
+doveSoapWithOffer = associateOffer emptyOffers doveSoap buy2Get1FreeOffer
 
 spec :: Spec
 spec = do
@@ -63,6 +63,3 @@ spec = do
         discountPrice cartWith3DoveSoapsAnd2AxeDeo doveSoapWithOffer `shouldBe` 39.99
         totalPrice cartWith3DoveSoapsAnd2AxeDeo doveSoapWithOffer twelvePointFiveTax `shouldBe` 314.955
         taxPrice cartWith3DoveSoapsAnd2AxeDeo doveSoapWithOffer twelvePointFiveTax `shouldBe` 34.995
-
-
-

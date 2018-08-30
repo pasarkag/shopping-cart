@@ -6,10 +6,11 @@ module ShoppingCart (
   Product(CartProduct),
   Cart,
   buy2Get1FreeOffer,
-  discountPrice
+  discountPrice,
+  associateOffer
 ) where
 
-import Data.Map (Map, (!), foldrWithKey, insertWith)
+import Data.Map (Map, (!), foldrWithKey, insertWith, insert)
 import qualified Data.Map as Map
 
 data Product = CartProduct{
@@ -25,6 +26,9 @@ type OfferAssociation = Map Product Offer
 
 addProductsToCart :: Cart -> Product -> Int -> Cart
 addProductsToCart cart product count =  insertWith (+) product count cart
+
+associateOffer :: OfferAssociation -> Product -> Offer -> OfferAssociation
+associateOffer offers product offer = insert product offer offers
 
 totalPrice :: Cart -> OfferAssociation -> Double -> Double
 totalPrice cart offers taxRate = total + (total * taxRate) where
