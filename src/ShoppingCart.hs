@@ -57,9 +57,9 @@ findProductQuantity cart product = cart ! product
 
 buy2Get1FreeOffer :: Offer
 buy2Get1FreeOffer cart product = ((price product) * discountOn)
-  where discountOn = fromIntegral (floor (fromIntegral (findProductQuantity cart product) / 3))
+  where discountOn = fromIntegral $ floor $ fromIntegral (findProductQuantity cart product) / 3
 
 buy1Get50PercentOnNext :: Offer
 buy1Get50PercentOnNext cart product = discountOn * ((price product) / 2)
-  where discountOn = fromIntegral (floor (fromIntegral (findProductQuantity cart product) / 2))
+  where discountOn = fromIntegral $ floor $ fromIntegral (findProductQuantity cart product) / 2
 
