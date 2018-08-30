@@ -27,8 +27,8 @@ cartWith2DoveSoaps = fromList[(doveSoap, 2)]
 cartWith3DoveSoapsAnd2AxeDeo = fromList[(doveSoap, 3), (axeDeo, 2)]
 
 emptyOffers = Map.empty
-doveSoapWithBuy2Get1Offer = associateOffer emptyOffers doveSoap buy2Get1FreeOffer
-doveSoapWithBuy1Get50PercentOffer = associateOffer emptyOffers doveSoap buy1Get50PercentOnNext
+doveSoapWithBuy2Get1Offer = associateOffer emptyOffers doveSoap Buy2Get1Free
+doveSoapWithBuy1Get50PercentOffer = associateOffer emptyOffers doveSoap Buy1Get50PercentOnNext
 
 spec :: Spec
 spec = do
