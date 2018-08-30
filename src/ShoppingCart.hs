@@ -12,7 +12,6 @@ module ShoppingCart (
 ) where
 
 import Data.Map (Map, (!), foldrWithKey, insertWith, insert)
-import qualified Data.Map as Map
 import Data.Decimal (Decimal, roundTo)
 
 data Product = CartProduct{
