@@ -23,6 +23,8 @@ cartWith2DoveSoapsWithTax = (replicate 2 doveSoap)
 cartWith2DoveSoapsAnd2Axe = addProductsToCart (addProductsToCart cartWith2DoveSoapsWithTax axeDeo) axeDeo
 cartWith3DoveSoaps = (replicate 3 doveSoap)
 
+cartWith3DoveSoapsAnd2AxeDeo = addProductsToCart (addProductsToCart cartWith3DoveSoaps axeDeo) axeDeo
+
 emptyOffers = Map.empty
 doveSoapWithOffer = fromList[(doveSoap, buy2Get1FreeOffer)]
 
@@ -51,4 +53,14 @@ spec = do
         discountPrice cartWith3DoveSoaps doveSoapWithOffer `shouldBe` 39.99
         totalPrice cartWith3DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 89.97749999999999
         taxPrice cartWith3DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 9.997499999999999
+    it "should give 1 dove soap free when 5 dove soaps are added and dove qualifes for buy 2 get 1 free offer" $ do
+        discountPrice cartWith5DoveSoaps doveSoapWithOffer `shouldBe` 39.99
+        totalPrice cartWith5DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 179.955
+        taxPrice cartWith5DoveSoaps doveSoapWithOffer twelvePointFiveTax `shouldBe` 19.995
+    it "should not give any discount to axe deo as it does not have any offer" $ do
+        discountPrice cartWith3DoveSoapsAnd2AxeDeo doveSoapWithOffer `shouldBe` 39.99
+        totalPrice cartWith3DoveSoapsAnd2AxeDeo doveSoapWithOffer twelvePointFiveTax `shouldBe` 314.955
+        taxPrice cartWith3DoveSoapsAnd2AxeDeo doveSoapWithOffer twelvePointFiveTax `shouldBe` 34.995
+
+
 
