@@ -37,14 +37,14 @@ associateOffer offers product offer = insert product offer offers
 
 totalPrice :: Cart -> OfferAssociation -> Price -> Price
 totalPrice cart offers taxRate = total + (total * taxRate) where
-    total = (cartSum cart) - (discountPrice cart offers)
+    total = discountedCartSum cart offers
 
-cartSum :: Cart -> Price
-cartSum cart = foldrWithKey computePrice 0.0 cart
-   where computePrice product count acc = acc + ((price product) * fromIntegral count)
+discountedCartSum :: Cart -> OfferAssociation -> Price
+discountedCartSum cart offers = foldrWithKey computePrice 0.0 cart - (discountPrice cart offers)
+  where computePrice product count acc = acc + ((price product) * fromIntegral count)
 
 taxPrice :: Cart -> OfferAssociation -> Price -> Price
-taxPrice cart offers taxRate = ((cartSum cart) - (discountPrice cart offers)) * (taxRate)
+taxPrice cart offers taxRate = (discountedCartSum cart offers) * (taxRate)
 
 discountPrice :: Cart -> OfferAssociation -> Price
 discountPrice cart offers = foldrWithKey computeDiscount 0.0 offers
