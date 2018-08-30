@@ -15,15 +15,15 @@ twelvePointFiveTax = 0.125
 doveSoap = CartProduct "Dove" 39.99
 axeDeo = CartProduct "Axe Deo" 99.99
 
-emptyCart =  []
-cartWithDoveAndAxe = addProductsToCart (addProductsToCart emptyCart doveSoap) axeDeo
-cartWith5DoveSoaps = replicate 5 doveSoap
-cartWith6DoveSoaps = addProductsToCart cartWith5DoveSoaps doveSoap
-cartWith2DoveSoapsWithTax = (replicate 2 doveSoap)
-cartWith2DoveSoapsAnd2Axe = addProductsToCart (addProductsToCart cartWith2DoveSoapsWithTax axeDeo) axeDeo
-cartWith3DoveSoaps = (replicate 3 doveSoap)
+emptyCart =  Map.empty
+cartWithDoveAndAxe = fromList[(doveSoap, 1), (axeDeo, 1)]
+cartWith5DoveSoaps = fromList[(doveSoap, 5)]
+cartWith6DoveSoaps = fromList[(doveSoap, 6)]
+cartWith2DoveSoapsWithTax = fromList[(doveSoap, 2)]
+cartWith2DoveSoapsAnd2Axe = fromList[(doveSoap, 2), (axeDeo, 2)]
+cartWith3DoveSoaps = fromList[(doveSoap, 3)]
 
-cartWith3DoveSoapsAnd2AxeDeo = addProductsToCart (addProductsToCart cartWith3DoveSoaps axeDeo) axeDeo
+cartWith3DoveSoapsAnd2AxeDeo = fromList[(doveSoap, 3), (axeDeo, 2)]
 
 emptyOffers = Map.empty
 doveSoapWithOffer = fromList[(doveSoap, buy2Get1FreeOffer)]
@@ -32,9 +32,11 @@ spec :: Spec
 spec = do
   describe "add products" $ do
     it "should add single product to cart" $ do
-        addProductsToCart emptyCart doveSoap `shouldBe` [doveSoap]
+        addProductsToCart emptyCart doveSoap 1 `shouldBe` fromList[(doveSoap, 1)]
+    it "should add same product multiple times to the cart" $ do
+        addProductsToCart (addProductsToCart emptyCart doveSoap 1) doveSoap 2 `shouldBe` fromList[(doveSoap, 3)]
     it "should add multiple products" $ do
-        addProductsToCart (addProductsToCart emptyCart doveSoap) axeDeo `shouldBe` [doveSoap, axeDeo]
+        addProductsToCart (addProductsToCart emptyCart doveSoap 1) axeDeo 1 `shouldBe` fromList[(doveSoap, 1), (axeDeo, 1)]
     it "should be able to fetch quantity of a product" $ do
         findProductQuantity cartWith6DoveSoaps doveSoap `shouldBe` 6
 
