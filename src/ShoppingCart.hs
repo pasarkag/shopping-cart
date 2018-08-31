@@ -7,7 +7,8 @@ module ShoppingCart (
   Cart,
   Offer(Buy2Get1Free, Buy1Get50PercentOnNext),
   discountPrice,
-  associateOffer
+  associateOffer,
+  applyOffer
 ) where
 
 import Data.Map (Map, (!), foldrWithKey, insertWith, insert)
@@ -59,8 +60,8 @@ findProductQuantity cart product = cart ! product
 
 applyOffer :: Offer -> Cart -> Product -> Price
 applyOffer productOffer cart product
-          | productOffer == Buy2Get1Free = buy2Get1FreeOffer cart product
-          | productOffer == Buy1Get50PercentOnNext = buy1Get50PercentOnNext cart product
+          | productOffer == Buy2Get1Free = roundToTwoDecimals (buy2Get1FreeOffer cart product)
+          | productOffer == Buy1Get50PercentOnNext = roundToTwoDecimals (buy1Get50PercentOnNext cart product)
           | otherwise = defaultPrice
 
 buy2Get1FreeOffer cart product = ((price product) * discountOn)

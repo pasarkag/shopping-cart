@@ -23,6 +23,7 @@ cartWith2DoveSoapsWithTax = fromList[(doveSoap, 2)]
 cartWith2DoveSoapsAnd2Axe = fromList[(doveSoap, 2), (axeDeo, 2)]
 cartWith3DoveSoaps = fromList[(doveSoap, 3)]
 cartWith2DoveSoaps = fromList[(doveSoap, 2)]
+cartWith1DoveSoap = fromList[(doveSoap, 1)]
 
 cartWith3DoveSoapsAnd2AxeDeo = fromList[(doveSoap, 3), (axeDeo, 2)]
 
@@ -71,3 +72,19 @@ spec = do
         discountPrice cartWith2DoveSoaps doveSoapWithBuy1Get50PercentOffer `shouldBe` 20.00
         totalPrice cartWith2DoveSoaps doveSoapWithBuy1Get50PercentOffer twelvePointFiveTax `shouldBe` 67.48
         taxPrice cartWith2DoveSoaps doveSoapWithBuy1Get50PercentOffer twelvePointFiveTax `shouldBe` 7.50
+
+  describe "buy 2 get 1 free offer" $ do
+    it "should NOT give any discount for 1 item" $ do
+        applyOffer Buy2Get1Free cartWith1DoveSoap doveSoap `shouldBe` 0.0
+    it "should NOT give any discount for 2 items" $ do
+        applyOffer Buy2Get1Free cartWith2DoveSoaps doveSoap `shouldBe` 0.0
+    it "should give discount on 1 item when 3 are added" $ do
+        applyOffer Buy2Get1Free cartWith3DoveSoaps doveSoap `shouldBe` 39.99
+
+  describe "buy 1 get 50% on next offer" $ do
+    it "shouuld NOT give any discount for 1 item" $ do
+      applyOffer Buy1Get50PercentOnNext cartWith1DoveSoap doveSoap `shouldBe` 0.0
+    it "should give 50% discount for 1 item when 2 are added" $ do
+      applyOffer Buy1Get50PercentOnNext cartWith2DoveSoaps doveSoap `shouldBe` 20.00
+
+
